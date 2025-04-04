@@ -11,10 +11,11 @@
     "**/*.tsx",
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
-    "app/(tabs)/Profile.jsx",
+    "app/(tabs)/profile.jsx",
     "app/_layout.jsx",
-    "app/(tabs)/AddNew.jsx",
-    "app/(tabs)/index.jsx",
-    "app/(tabs)/_layout.jsx"
+    "app/(tabs)/addNew.jsx",
+    "app/(tabs)/home.jsx",
+    "app/(tabs)/_layout.jsx",
+    "components/ui/BackButton.jsx"
   ]
 }

@@ -7,8 +7,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { useRouter } from "expo-router";
 
 const Login = () => {
+  const router = useRouter();
   return (
     <SafeAreaView
       edges={["top"]}
@@ -23,6 +25,8 @@ const Login = () => {
       <View
         style={{
           padding: 25,
+          borderTopLeftRadius: 25,
+          borderTopRightRadius: 25,
           width: "100%",
           height: "100%",
           backgroundColor: Colors.PRIMARY,
@@ -49,7 +53,10 @@ const Login = () => {
           Keep track of your medications, stay in control, and feel confident
           about your health every day.
         </Text>
-        <TouchableOpacity style={styles.button}>
+        <TouchableOpacity
+          onPress={() => router.push("signIn")}
+          style={styles.button}
+        >
           <Text
             style={{
               textAlign: "center",
