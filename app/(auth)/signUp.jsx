@@ -14,7 +14,12 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
-import { BackButton, CustomKeyboardView, Loading } from "../../components";
+import {
+  BackButton,
+  Button,
+  CustomKeyboardView,
+  Loading,
+} from "../../components";
 import useAuthStore from "../../store/useAuthStore";
 import Ionicons from "@expo/vector-icons/Ionicons";
 const SignUp = () => {
@@ -114,38 +119,20 @@ const SignUp = () => {
               <Loading color={Colors.WHITE} size={hp(3)} />
             </View>
           ) : (
-            <TouchableOpacity
+            <Button
               onPress={() => handleSignUp()}
-              style={styles.button}
-            >
-              <Text
-                style={{
-                  fontSize: hp(2),
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: Colors.WHITE,
-                }}
-              >
-                Create Account
-              </Text>
-            </TouchableOpacity>
+              style={{ marginTop: 20 }}
+              text={"Create Account"}
+            />
           )}
-
-          <TouchableOpacity
+          <Button
             onPress={() => router.replace("signIn")}
-            style={styles.buttonCreate}
-          >
-            <Text
-              style={{
-                fontSize: hp(2),
-                textAlign: "center",
-                fontWeight: "bold",
-                color: Colors.PRIMARY,
-              }}
-            >
-              Already account? Sign In
-            </Text>
-          </TouchableOpacity>
+            style={{ marginTop: 20 }}
+            backgroundColor={Colors.WHITE}
+            color={Colors.PRIMARY}
+            borderColor={Colors.PRIMARY}
+            text={"Already account? Sign In"}
+          />
         </View>
       </CustomKeyboardView>
     </SafeAreaView>
@@ -177,7 +164,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
     padding: 15,
     backgroundColor: Colors.PRIMARY,
-    borderRadius: 10,
+    borderRadius: 99,
   },
   buttonCreate: {
     marginTop: 20,
@@ -185,6 +172,6 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.WHITE,
     borderWidth: 1,
     borderColor: Colors.PRIMARY,
-    borderRadius: 10,
+    borderRadius: 99,
   },
 });

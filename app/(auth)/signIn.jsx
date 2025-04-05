@@ -15,7 +15,12 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
-import { BackButton, CustomKeyboardView, Loading } from "../../components";
+import {
+  BackButton,
+  Button,
+  CustomKeyboardView,
+  Loading,
+} from "../../components";
 import useAuthStore from "../../store/useAuthStore";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -67,17 +72,6 @@ const SignIn = () => {
               placeholder="Email"
             />
           </View>
-          {/* <View style={{ marginTop: 25 }}>
-            <Text>Password</Text>
-            <TextInput
-              onChangeText={value => {
-                passwordRef.current = value;
-              }}
-              secureTextEntry={true}
-              style={styles.textInput}
-              placeholder="Password"
-            />
-          </View> */}
           <View style={{ marginTop: 25 }}>
             <Text>Password</Text>
             <View style={{ position: "relative", justifyContent: "center" }}>
@@ -111,38 +105,20 @@ const SignIn = () => {
               <Loading color={Colors.WHITE} size={hp(3)} />
             </View>
           ) : (
-            <TouchableOpacity
+            <Button
               onPress={() => onLoginWithEmailAndPassword()}
-              style={styles.button}
-            >
-              <Text
-                style={{
-                  fontSize: hp(2),
-                  textAlign: "center",
-                  fontWeight: "bold",
-                  color: Colors.WHITE,
-                }}
-              >
-                Login
-              </Text>
-            </TouchableOpacity>
+              style={{ marginTop: 20 }}
+              text={"Login"}
+            />
           )}
-
-          <TouchableOpacity
+          <Button
             onPress={() => router.replace("signUp")}
-            style={styles.buttonCreate}
-          >
-            <Text
-              style={{
-                fontSize: hp(2),
-                textAlign: "center",
-                fontWeight: "bold",
-                color: Colors.PRIMARY,
-              }}
-            >
-              Create Account
-            </Text>
-          </TouchableOpacity>
+            style={{ marginTop: 20 }}
+            backgroundColor={Colors.WHITE}
+            color={Colors.PRIMARY}
+            borderColor={Colors.PRIMARY}
+            text={"Create Account"}
+          />
         </View>
       </CustomKeyboardView>
     </SafeAreaView>
@@ -174,7 +150,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
     padding: 15,
     backgroundColor: Colors.PRIMARY,
-    borderRadius: 10,
+    borderRadius: 99,
   },
   buttonCreate: {
     marginTop: 20,

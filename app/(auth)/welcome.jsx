@@ -8,6 +8,7 @@ import {
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { useRouter } from "expo-router";
+import { Button } from "../../components";
 
 const Login = () => {
   const router = useRouter();
@@ -53,21 +54,13 @@ const Login = () => {
           Keep track of your medications, stay in control, and feel confident
           about your health every day.
         </Text>
-        <TouchableOpacity
+        <Button
           onPress={() => router.push("signIn")}
-          style={styles.button}
-        >
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: hp(2),
-              fontWeight: "bold",
-              color: Colors.PRIMARY,
-            }}
-          >
-            Continue
-          </Text>
-        </TouchableOpacity>
+          style={{ marginTop: 20 }}
+          backgroundColor={Colors.WHITE}
+          color={Colors.PRIMARY}
+          text={"Continue"}
+        />
         <Text
           style={{
             color: Colors.WHITE,
@@ -86,10 +79,4 @@ export default Login;
 
 const styles = StyleSheet.create({
   image: { width: wp(50), height: hp(50), borderRadius: 23 },
-  button: {
-    padding: 15,
-    backgroundColor: Colors.WHITE,
-    borderRadius: 99,
-    marginTop: 20,
-  },
 });
