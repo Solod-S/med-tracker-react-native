@@ -37,6 +37,10 @@ export default function RootLayout() {
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="(modals)/addNewMedication"
+          options={{ headerShown: false, presentation: "modal" }}
+        />
       </Stack>
       <Toast />
       <StatusBar style="dark" />

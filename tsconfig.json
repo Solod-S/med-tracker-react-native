@@ -13,7 +13,7 @@
     "expo-env.d.ts",
     "app/(tabs)/profile.jsx",
     "app/_layout.jsx",
-    "app/(tabs)/addNew.jsx",
+    "app/(tabs)/history.jsx",
     "app/(tabs)/home.jsx",
     "app/(tabs)/_layout.jsx",
     "components/ui/BackButton.jsx"

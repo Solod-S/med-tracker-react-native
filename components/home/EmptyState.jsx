@@ -31,7 +31,7 @@ export const EmptyState = () => {
         You have 0 medication setup, kindly setup a new one
       </Text>
       <Button
-        onPress={() => router.push("/(tabs)/addNew")}
+        onPress={() => router.push("/(modals)/addNewMedication")}
         style={{ marginTop: 20 }}
         text={"+ Add New Medication"}
       />

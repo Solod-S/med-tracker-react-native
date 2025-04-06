@@ -33,17 +33,15 @@ export const Header = () => {
             style={{ width: wp(10), height: wp(10) }}
             source={require("./../../assets/images/hello.png")}
           />
+
           <Text style={{ fontSize: hp(4), fontWeight: "bold" }}>
             Hello,{" "}
-            <Text style={{ fontSize: hp(4), fontWeight: "bold" }}>
-              Hello,{" "}
-              {user?.fullName
-                ? user.fullName.length > 5
-                  ? user.fullName.slice(0, 2) + "..." + " "
-                  : user.fullName
-                : "Guest"}{" "}
-              ⭐
-            </Text>
+            {user?.fullName
+              ? user.fullName.length > 5
+                ? user.fullName.slice(0, 2) + "..." + " "
+                : user.fullName
+              : "Guest"}{" "}
+            ⭐
           </Text>
         </View>
         <Feather name="settings" size={34} color={Colors.DARK_GRAY} />
