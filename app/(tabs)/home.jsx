@@ -1,7 +1,7 @@
 import { EmptyState, Header } from "@/components";
 import Colors from "@/constants/Colors";
-import useAuthStore from "@/store/useAuthStore";
-import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { View } from "react-native";
 
 export default function Home() {
   return (

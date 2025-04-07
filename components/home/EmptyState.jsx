@@ -1,12 +1,12 @@
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
+import { useRouter } from "expo-router";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Colors from "@/constants/Colors";
 import { Button } from "../ui";
-import { useRouter } from "expo-router";
 
 export const EmptyState = () => {
   const router = useRouter();

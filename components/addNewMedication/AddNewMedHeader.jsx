@@ -13,7 +13,7 @@ export const AddNewMedHeader = () => {
         style={{ width: wp(100), height: hp(30), resizeMode: "contain" }}
         source={require("./../../assets/images/add.png")}
       />
-      <BackButton style={{ position: "absolute", padding: 15 }} />
+      <BackButton style={{ position: "absolute", top: 5, right: 10 }} />
     </View>
   );
 };

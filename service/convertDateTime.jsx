@@ -5,5 +5,16 @@ export const formateDate = timestamp => {
 };
 
 export const formateDateForText = date => {
-  return moment(date).format("L");
+  return moment(date).format("ll");
+};
+
+export const formatTime = timestamp => {
+  const date = new Date(timestamp);
+  const timeString = date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    // hour12: true,
+  });
+  console.log(`timeString`, timeString);
+  return timeString; // 9:00 AM
 };

@@ -5,6 +5,7 @@ import "react-native-reanimated";
 import useAuthStore from "../store/useAuthStore";
 import { useEffect } from "react";
 import Toast from "react-native-toast-message";
+import { toastConfig } from "@/config/ToastConfig";
 
 export default function RootLayout() {
   const { user, isAuthenticated, initAuthListener } = useAuthStore();
@@ -33,6 +34,7 @@ export default function RootLayout() {
 
   return (
     <View style={{ flex: 1 }}>
+      <StatusBar style="dark" />
       <Stack>
         <Stack.Screen name="index" options={{ headerShown: false }} />
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
@@ -42,8 +44,7 @@ export default function RootLayout() {
           options={{ headerShown: false, presentation: "modal" }}
         />
       </Stack>
-      <Toast />
-      <StatusBar style="dark" />
+      <Toast config={toastConfig} />
     </View>
   );
 }
