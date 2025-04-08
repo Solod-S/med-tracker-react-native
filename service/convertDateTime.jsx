@@ -15,6 +15,29 @@ export const formatTime = timestamp => {
     minute: "2-digit",
     // hour12: true,
   });
-  console.log(`timeString`, timeString);
   return timeString; // 9:00 AM
+};
+
+export const getDatesRange = (startDate, endDate) => {
+  const start = moment(new Date(startDate), "MM/DD/YYYY");
+  const end = moment(new Date(endDate), "MM/DD/YYYY");
+
+  const dates = [];
+  while (start.isSameOrBefore(end)) {
+    dates.push(start.format("MM/DD/YYYY"));
+    start.add(1, "days");
+  }
+  return dates;
+};
+
+export const getDateRangeToDisplay = () => {
+  const dateList = [];
+  for (let index = 0; index <= 7; index++) {
+    dateList.push({
+      date: moment().add(index, "days").format("DD"), // 28
+      day: moment().add(index, "days").format("dd"), // Tue
+      formattedDate: moment().add(index, "days").format("L"), // 12/27/2025
+    });
+  }
+  return dateList;
 };

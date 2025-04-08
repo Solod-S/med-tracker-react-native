@@ -35,7 +35,7 @@ export const AddNewMedForm = () => {
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [formData, setFormData] = useState({});
+  const [formData, setFormData] = useState({ when: "Morning" });
   const [isLoading, setIsLoading] = useState(false);
 
   const onHandleSave = async () => {
@@ -201,16 +201,17 @@ export const AddNewMedForm = () => {
             size={24}
             color="black"
           />
-          <Text style={styles.text}>{formData?.startDate ?? "Start Date"}</Text>
+          <Text style={styles.text}>
+            {formData?.startDate
+              ? formateDateForText(formData.startDate)
+              : "Start Date"}
+          </Text>
         </TouchableOpacity>
         {showStartDatePicker && (
           <RNDateTimePicker
             value={new Date(formData?.startDate) ?? new Date()}
             onChange={event => {
-              onHandleInputChange(
-                "startDate",
-                formateDateForText(event.nativeEvent.timestamp)
-              );
+              onHandleInputChange("startDate", event.nativeEvent.timestamp);
 
               setShowStartDatePicker(false);
             }}
@@ -227,16 +228,17 @@ export const AddNewMedForm = () => {
             size={24}
             color="black"
           />
-          <Text style={styles.text}>{formData?.endDate ?? "End Date"}</Text>
+          <Text style={styles.text}>
+            {formData?.endDate
+              ? formateDateForText(formData.endDate)
+              : "End Date"}
+          </Text>
         </TouchableOpacity>
         {showEndDatePicker && (
           <RNDateTimePicker
             value={new Date(formData?.endDate) ?? new Date()}
             onChange={event => {
-              onHandleInputChange(
-                "endDate",
-                formateDateForText(event.nativeEvent.timestamp)
-              );
+              onHandleInputChange("endDate", event.nativeEvent.timestamp);
 
               setShowEndDatePicker(false);
             }}

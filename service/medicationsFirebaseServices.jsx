@@ -1,7 +1,15 @@
 import { db } from "@/config/FirebaseConfig";
-import { doc, setDoc } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDocs,
+  query,
+  setDoc,
+  where,
+} from "firebase/firestore";
 import { Alert } from "react-native";
 import uuid from "react-native-uuid";
+import { getDatesRange } from "./convertDateTime";
 
 const medicationsFirebaseServices = {};
 
@@ -27,17 +35,49 @@ medicationsFirebaseServices.saveMedication = async data => {
         )}`,
       };
     }
+    const dates = getDatesRange(startDate, endDate);
 
     await setDoc(doc(db, "medication", docId), {
       ...data,
       docId,
+      dates,
     });
     return {
       success: true,
       message: "Data has been successfully saved.",
     };
   } catch (error) {
-    throw error;
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};
+
+medicationsFirebaseServices.fetchMedication = async (user, selectedDate) => {
+  try {
+    const q = query(
+      collection(db, "medication"),
+      where("uid", "==", user?.userId),
+      where("dates", "array-contains", selectedDate)
+    );
+    const queySnapshot = await getDocs(q);
+    const data = [];
+    queySnapshot.forEach(doc => {
+      data.push(doc.data());
+    });
+
+    return {
+      success: true,
+      data,
+      message: "Data has been successfully saved.",
+    };
+  } catch (error) {
+    console.log(`error in fetchMedication:`, error.message);
+    return {
+      success: false,
+      message: error.message,
+    };
   }
 };
 

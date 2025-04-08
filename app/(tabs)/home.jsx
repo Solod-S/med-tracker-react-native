@@ -1,4 +1,4 @@
-import { EmptyState, Header } from "@/components";
+import { EmptyState, Header, MedicationList } from "@/components";
 import Colors from "@/constants/Colors";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { View } from "react-native";
@@ -14,7 +14,8 @@ export default function Home() {
     >
       <View style={{ padding: 25 }}>
         <Header />
-        <EmptyState />
+        {/* <EmptyState /> */}
+        <MedicationList />
       </View>
     </SafeAreaView>
   );
