@@ -1,15 +1,18 @@
 import { db } from "@/config/FirebaseConfig";
 import {
+  arrayUnion,
   collection,
   doc,
   getDocs,
   query,
   setDoc,
+  updateDoc,
   where,
 } from "firebase/firestore";
 import { Alert } from "react-native";
 import uuid from "react-native-uuid";
 import { getDatesRange } from "./convertDateTime";
+import moment from "moment";
 
 const medicationsFirebaseServices = {};
 
@@ -74,6 +77,32 @@ medicationsFirebaseServices.fetchMedication = async (user, selectedDate) => {
     };
   } catch (error) {
     console.log(`error in fetchMedication:`, error.message);
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};
+
+medicationsFirebaseServices.changeStatus = async (status, medicine) => {
+  try {
+    console.log(`medicine`, status);
+    const docRef = doc(db, "medication", medicine?.docId);
+    await updateDoc(docRef, {
+      action: arrayUnion({
+        status,
+        time: moment().format("LT"),
+        date: medicine?.selectedDate,
+      }),
+    });
+
+    return {
+      success: true,
+
+      message: "Data has been successfully updated.",
+    };
+  } catch (error) {
+    console.log(`error in changeStatus:`, error.message);
     return {
       success: false,
       message: error.message,

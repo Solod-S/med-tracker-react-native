@@ -1,14 +1,16 @@
-import { Image, Text, View } from "react-native";
+import { Image, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import useAuthStore from "@/store/useAuthStore";
-import Feather from "@expo/vector-icons/Feather";
+import Entypo from "@expo/vector-icons/Entypo";
 import Colors from "@/constants/Colors";
+import { useRouter } from "expo-router";
 
 export const Header = () => {
+  const router = useRouter();
   const { user } = useAuthStore();
 
   return (
@@ -44,7 +46,11 @@ export const Header = () => {
             ⭐
           </Text>
         </View>
-        <Feather name="settings" size={34} color={Colors.DARK_GRAY} />
+        <TouchableOpacity
+          onPress={() => router.push("/(modals)/addNewMedication")}
+        >
+          <Entypo name="circle-with-plus" size={40} color={Colors.PRIMARY} />
+        </TouchableOpacity>
       </View>
     </View>
   );

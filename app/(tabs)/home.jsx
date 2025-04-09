@@ -1,7 +1,7 @@
-import { EmptyState, Header, MedicationList } from "@/components";
+import { Header, MedicationList } from "@/components";
 import Colors from "@/constants/Colors";
+import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { View } from "react-native";
 
 export default function Home() {
   return (
@@ -12,11 +12,16 @@ export default function Home() {
         backgroundColor: Colors.WHITE,
       }}
     >
-      <View style={{ padding: 25 }}>
-        <Header />
-        {/* <EmptyState /> */}
-        <MedicationList />
-      </View>
+      <FlatList
+        data={[]}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={
+          <View style={{ padding: 25 }}>
+            <Header />
+            <MedicationList />
+          </View>
+        }
+      />
     </SafeAreaView>
   );
 }

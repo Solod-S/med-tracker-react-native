@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useRouter } from "expo-router";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -18,14 +17,19 @@ import moment from "moment";
 import useAuthStore from "@/store/useAuthStore";
 import medicationsFirebaseServices from "@/service/medicationsFirebaseServices";
 import { MedicationCardItem } from "./MedicationCardItem";
+import { EmptyState } from "./EmptyState";
+import { useRouter } from "expo-router";
 
 export const MedicationList = () => {
+  const router = useRouter();
   const { user } = useAuthStore();
   const [selectedDate, setSelectedDate] = useState(
     moment().format("MM/DD/YYYY")
   );
-  const [medList, setMedList] = useState();
-  const [dateRange, setDateRange] = useState();
+  const [medList, setMedList] = useState([]);
+  const [dateRange, setDateRange] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
     getDateRangeList();
   }, []);
@@ -40,14 +44,21 @@ export const MedicationList = () => {
   };
 
   const getMedList = async () => {
-    setMedList([]);
+    try {
+      setIsLoading(true);
+      setMedList([]);
 
-    const { data } = await medicationsFirebaseServices.fetchMedication(
-      user,
-      selectedDate
-    );
+      const { data } = await medicationsFirebaseServices.fetchMedication(
+        user,
+        selectedDate
+      );
 
-    if (data) setMedList(data);
+      if (data) setMedList(data);
+    } catch (error) {
+      console.log(`error in setIsLoading:`, setIsLoading());
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -64,7 +75,10 @@ export const MedicationList = () => {
         style={{ marginTop: 15 }}
         renderItem={({ item, index }) => (
           <TouchableOpacity
-            onPress={() => setSelectedDate(item.formattedDate)}
+            onPress={() => {
+              setSelectedDate(item.formattedDate);
+              // getMedList(item.formattedDate);
+            }}
             style={[
               styles.dateGroup,
               {
@@ -101,10 +115,27 @@ export const MedicationList = () => {
           </TouchableOpacity>
         )}
       />
-      <FlatList
-        data={medList}
-        renderItem={({ item, index }) => <MedicationCardItem medicine={item} />}
-      />
+      {medList?.length > 0 ? (
+        <FlatList
+          data={medList}
+          onRefresh={() => getMedList()}
+          refreshing={isLoading}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity
+              onPress={() =>
+                router.push({
+                  pathname: "/(modals)/actionModal",
+                  params: { ...item, selectedDate },
+                })
+              }
+            >
+              <MedicationCardItem medicine={item} />
+            </TouchableOpacity>
+          )}
+        />
+      ) : (
+        <EmptyState />
+      )}
     </View>
   );
 };

@@ -2,7 +2,7 @@ import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 
 import { useRouter } from "expo-router";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import Entypo from "@expo/vector-icons/Entypo";
 import Colors from "../../constants/Colors";
 import {
   widthPercentageToDP as wp,
@@ -16,11 +16,7 @@ export const BackButton = ({ style, iconSize = 4 }) => {
       style={[styles.button, style]}
       onPress={() => router.back()}
     >
-      <Ionicons
-        name="caret-back-sharp"
-        size={hp(iconSize)}
-        color={Colors.PRIMARY}
-      />
+      <Entypo name="chevron-left" size={hp(iconSize)} color={Colors.WHITE} />
     </TouchableOpacity>
   );
 };
@@ -31,6 +27,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     borderRadius: 100,
     padding: 5,
+    backgroundColor: Colors.PRIMARY,
     borderCurve: "continuous",
   },
 });

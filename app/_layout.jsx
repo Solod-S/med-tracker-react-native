@@ -43,6 +43,10 @@ export default function RootLayout() {
           name="(modals)/addNewMedication"
           options={{ headerShown: false, presentation: "modal" }}
         />
+        <Stack.Screen
+          name="(modals)/actionModal"
+          options={{ headerShown: false, presentation: "modal" }}
+        />
       </Stack>
       <Toast config={toastConfig} />
     </View>
