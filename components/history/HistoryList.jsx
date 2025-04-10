@@ -6,46 +6,32 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useCallback, useEffect, useState } from "react";
+import moment from "moment";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import Colors from "@/constants/Colors";
-import { getDateRangeToDisplay } from "@/service/convertDateTime";
-import moment from "moment";
-import useAuthStore from "@/store/useAuthStore";
-import medicationsFirebaseServices from "@/service/medicationsFirebaseServices";
-import { MedicationCardItem } from "./MedicationCardItem";
-import { EmptyState } from "./EmptyState";
-import { useFocusEffect, useRouter } from "expo-router";
 
-export const MedicationList = () => {
+import { useEffect, useState } from "react";
+import { getPrevDateRangeToDisplay } from "./../../service/convertDateTime";
+
+import medicationsFirebaseServices from "./../../service/medicationsFirebaseServices";
+import useAuthStore from "./../../store/useAuthStore";
+import { MedicationCardItem } from "./../../components";
+import Colors from "@/constants/Colors";
+import { useRouter } from "expo-router";
+export const HistoryList = () => {
   const router = useRouter();
   const { user } = useAuthStore();
   const [selectedDate, setSelectedDate] = useState(
     moment().format("MM/DD/YYYY")
   );
-  const [medList, setMedList] = useState([]);
   const [dateRange, setDateRange] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [medList, setMedList] = useState([]);
   useEffect(() => {
-    getDateRangeList();
-  }, []);
-
-  useFocusEffect(
-    useCallback(() => {
-      if (selectedDate && user?.userId) {
-        getMedList();
-      }
-    }, [selectedDate, user])
-  );
-
-  const getDateRangeList = () => {
-    const result = getDateRangeToDisplay();
-    setDateRange(result);
-  };
+    if (selectedDate && user?.userId) getMedList();
+  }, [selectedDate, user]);
 
   const getMedList = async () => {
     try {
@@ -67,13 +53,22 @@ export const MedicationList = () => {
     }
   };
 
+  useEffect(() => {
+    getDateList();
+  }, []);
+
+  const getDateList = () => {
+    const dates = getPrevDateRangeToDisplay();
+    setDateRange(dates);
+  };
   return (
-    <View style={{ marginTop: 25 }}>
+    <View style={styles.mainContainer}>
+      <Text style={styles.header}>Medication History</Text>
       <Image
-        source={require("./../../assets/images/medication.png")}
-        style={{ width: "100%", height: hp(30) }}
-        resizeMode="contain"
+        style={styles.imageBanner}
+        source={require("./../../assets/images/history.png")}
       />
+
       <FlatList
         data={dateRange}
         horizontal
@@ -83,6 +78,7 @@ export const MedicationList = () => {
           <TouchableOpacity
             onPress={() => {
               setSelectedDate(item.formattedDate);
+
               // getMedList(item.formattedDate);
             }}
             style={[
@@ -140,13 +136,39 @@ export const MedicationList = () => {
           )}
         />
       ) : (
-        <EmptyState />
+        <Text
+          style={{
+            fontSize: hp(3),
+            fontWeight: "bold",
+            padding: 20,
+            color: Colors.GRAY,
+            textAlign: "center",
+          }}
+        >
+          No Medication Found
+        </Text>
       )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  mainContainer: {
+    padding: 25,
+    backgroundColor: "white",
+  },
+  imageBanner: {
+    width: "100%",
+    height: hp(30),
+    resizeMode: "contain",
+    borderRadius: 15,
+  },
+  header: {
+    fontSize: hp(4),
+    textAlign: "center",
+    fontWeight: "bold",
+    // marginTop: 5,
+  },
   dateGroup: {
     padding: 15,
     borderRadius: 20,

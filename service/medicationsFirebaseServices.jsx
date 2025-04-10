@@ -2,6 +2,7 @@ import { db } from "@/config/FirebaseConfig";
 import {
   arrayUnion,
   collection,
+  deleteDoc,
   doc,
   getDocs,
   query,
@@ -9,7 +10,6 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { Alert } from "react-native";
 import uuid from "react-native-uuid";
 import { getDatesRange } from "./convertDateTime";
 import moment from "moment";
@@ -57,6 +57,22 @@ medicationsFirebaseServices.saveMedication = async data => {
   }
 };
 
+medicationsFirebaseServices.deleteMedication = async docId => {
+  try {
+    await deleteDoc(doc(db, "medication", docId));
+    return {
+      success: true,
+      message: "Medication successfully deleted.",
+    };
+  } catch (error) {
+    console.log("error in deleteMedication:", error.message);
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};
+
 medicationsFirebaseServices.fetchMedication = async (user, selectedDate) => {
   try {
     const q = query(
@@ -86,7 +102,6 @@ medicationsFirebaseServices.fetchMedication = async (user, selectedDate) => {
 
 medicationsFirebaseServices.changeStatus = async (status, medicine) => {
   try {
-    console.log(`medicine`, status);
     const docRef = doc(db, "medication", medicine?.docId);
     await updateDoc(docRef, {
       action: arrayUnion({

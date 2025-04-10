@@ -1,6 +1,7 @@
-import { Text } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Header, HistoryList } from "@/components";
 import Colors from "@/constants/Colors";
+import { FlatList, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function History() {
   return (
@@ -11,7 +12,11 @@ export default function History() {
         backgroundColor: Colors.WHITE,
       }}
     >
-      <Text>History</Text>
+      <FlatList
+        data={[]}
+        showsVerticalScrollIndicator={false}
+        ListHeaderComponent={<HistoryList />}
+      />
     </SafeAreaView>
   );
 }

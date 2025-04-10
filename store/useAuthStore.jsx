@@ -5,6 +5,7 @@ import {
   onAuthStateChanged,
   signOut,
   sendPasswordResetEmail,
+  updateProfile,
 } from "firebase/auth";
 import { auth, db } from "../config/FirebaseConfig";
 import { doc, getDoc, setDoc } from "firebase/firestore";
@@ -38,8 +39,8 @@ const useAuthStore = create(set => ({
       const response = await signInWithEmailAndPassword(auth, email, password);
       const { user } = response;
 
-      set({ user: response.user, isAuthenticated: true });
-      return { success: true, data: response.user };
+      set({ user: user, isAuthenticated: true });
+      return { success: true, data: user };
     } catch (error) {
       console.log("Error login:", error);
       let msg = error.message || "An error occurred";
@@ -84,6 +85,9 @@ const useAuthStore = create(set => ({
         password
       );
       const { user } = response;
+      await updateProfile(user, {
+        displayName: fullName,
+      });
       await setDoc(doc(db, "users", user.uid), {
         email,
         fullName,

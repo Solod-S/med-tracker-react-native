@@ -1,13 +1,25 @@
 import { Image, StyleSheet, Text, View } from "react-native";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import Colors from "@/constants/Colors";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
-export const MedicationCardItem = ({ medicine }) => {
+export const MedicationCardItem = ({ medicine, selectedDate = "" }) => {
+  const [status, setStatus] = useState();
+  const checkStatus = () => {
+    if (Array.isArray(medicine?.action)) {
+      const data = medicine.action.find(item => item.date === selectedDate);
+      setStatus(data);
+    }
+  };
+  useEffect(() => {
+    checkStatus();
+  }, [medicine]);
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
@@ -31,7 +43,20 @@ export const MedicationCardItem = ({ medicine }) => {
           {medicine?.reminder}
         </Text>
       </View>
-      {/* <View style={styles.subContainer}></View> */}
+      {status?.date && (
+        <View style={styles.statusContainer}>
+          {status?.status == "Taken" && (
+            <FontAwesome
+              name="check-circle"
+              size={hp(2)}
+              color={Colors.GREEN}
+            />
+          )}
+          {status?.status == "Missed" && (
+            <AntDesign name="closecircle" size={hp(1.8)} color="red" />
+          )}
+        </View>
+      )}
     </View>
   );
 };
@@ -55,14 +80,18 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     marginRight: 15,
   },
-  subContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
   reminderContainer: {
     padding: 10,
     backgroundColor: "white",
+    borderWidth: 1,
+    borderColor: Colors.GRAY,
     borderRadius: 15,
+
     alignItems: "center",
+  },
+  statusContainer: {
+    position: "absolute",
+    top: 5,
+    padding: 7,
   },
 });
