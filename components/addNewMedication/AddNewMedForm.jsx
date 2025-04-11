@@ -19,7 +19,6 @@ import Ionicons from "@expo/vector-icons/Ionicons";
 import { Picker } from "@react-native-picker/picker";
 import RNDateTimePicker from "@react-native-community/datetimepicker";
 import Toast from "react-native-toast-message";
-
 import Colors from "@/constants/Colors";
 import { TypeList, WhenToTake } from "./../../constants/Options";
 import medicationsFirebaseServices from "@/service/medicationsFirebaseServices";
@@ -263,12 +262,21 @@ export const AddNewMedForm = () => {
           display="spinner"
           mode="time"
           value={new Date(formData?.reminder) ?? new Date()}
-          onChange={event => {
-            onHandleInputChange(
-              "reminder",
-              formatTime(event.nativeEvent.timestamp)
-            );
+          // onChange={event => {
+          //   onHandleInputChange(
+          //     "reminder",
+          //     formatTime(event.nativeEvent.timestamp)
+          //   );
 
+          //   setShowTimePicker(false);
+          // }}
+          onChange={(event, selectedDate) => {
+            if (event.type === "set" && selectedDate) {
+              onHandleInputChange(
+                "reminder",
+                formatTime(event.nativeEvent.timestamp)
+              );
+            }
             setShowTimePicker(false);
           }}
           minimumDate={new Date()}

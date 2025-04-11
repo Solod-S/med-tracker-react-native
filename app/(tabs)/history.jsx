@@ -1,4 +1,4 @@
-import { Header, HistoryList } from "@/components";
+import { HistoryList } from "@/components/history/HistoryList";
 import Colors from "@/constants/Colors";
 import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

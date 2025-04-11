@@ -1,13 +1,15 @@
 import {
   Alert,
   Image,
+  Modal,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BackButton, MedicationCardItem } from "../../components";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
@@ -18,12 +20,56 @@ import {
 import Colors from "../../constants/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import medicationsFirebaseServices from "./../../service/medicationsFirebaseServices";
+import RNDateTimePicker from "@react-native-community/datetimepicker";
+import { formatTime } from "../../service/convertDateTime";
+import { Picker } from "@react-native-picker/picker";
+import { WhenToTake } from "../../constants/Options";
+import Toast from "react-native-toast-message";
 
 const ActionModal = () => {
   const router = useRouter();
-  const medicine = useLocalSearchParams();
-
+  const medicineParams = useLocalSearchParams();
+  const [medicine, setMedicine] = useState({});
+  const [isModalVisible, setIsModalVisible] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (medicineParams && medicineParams?.docId) {
+      console.log(`medicineParams`, medicineParams.docId);
+      setMedicine(medicineParams);
+    }
+  }, []);
+
+  const handleEdit = async data => {
+    try {
+      if (isLoading) return;
+      setIsLoading(true);
+      const { success, message } =
+        await medicationsFirebaseServices.updateMedication({
+          ...medicine,
+          ...data,
+        });
+      console.log(`success`, success);
+      if (!success) {
+        Alert.alert("Medication", message);
+      } else {
+        setMedicine(prevState => ({ ...prevState, ...data }));
+        Toast.show({
+          type: "success",
+          position: "top",
+          // text1: "Error",
+          text2: message,
+          visibilityTime: 2000,
+          autoHide: true,
+        });
+        setIsModalVisible(false);
+      }
+      console.log(`Error in handleEdit: `, error.message);
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const showAlert = () => {
     Alert.alert("Logout", "Are you sure you want to delete this?", [
@@ -99,7 +145,7 @@ const ActionModal = () => {
             </TouchableOpacity>
             <TouchableOpacity
               disabled={isLoading}
-              // onPress={() => showAlert()}
+              onPress={() => setIsModalVisible(true)}
               style={[
                 styles.editButton,
                 { borderColor: isLoading ? "gray" : Colors.PRIMARY },
@@ -171,11 +217,165 @@ const ActionModal = () => {
           </View>
         </View>
       </View>
+      <EditDataModal
+        medicine={medicine}
+        isModalVisible={isModalVisible}
+        setIsModalVisible={setIsModalVisible}
+        handleEdit={handleEdit}
+        isLoading={isLoading}
+      />
     </SafeAreaView>
   );
 };
 
 export default ActionModal;
+
+const EditDataModal = ({
+  medicine,
+  isModalVisible,
+  setIsModalVisible,
+  handleEdit,
+  isLoading,
+}) => {
+  const [name, setName] = useState("");
+  const [dose, setDose] = useState("");
+  const [when, setWhen] = useState(WhenToTake[0]);
+  const [reminder, setReminder] = useState(null);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
+  const handleCancelEdit = () => {
+    if (isLoading) return;
+    setIsModalVisible(false);
+  };
+
+  useEffect(() => {
+    setName(medicine?.name || "");
+    setDose(medicine?.dose || "");
+    setWhen(medicine?.when || WhenToTake[0]);
+    setReminder(medicine?.reminder || null);
+  }, [isModalVisible]);
+
+  return (
+    <Modal
+      visible={isModalVisible}
+      transparent
+      animationType="fade"
+      onRequestClose={handleCancelEdit}
+    >
+      <View style={styles.modalOverlay}>
+        <View style={styles.modalContent}>
+          <Text style={styles.modalTitle}>Edit</Text>
+          <View style={{ marginTop: 5, width: "100%" }}>
+            <Text>Name</Text>
+            <TextInput
+              placeholder={"Name"}
+              value={name}
+              style={styles.textInput}
+              onChangeText={text => setName(text)}
+            />
+          </View>
+
+          <View style={{ marginTop: 5, width: "100%" }}>
+            <Text>Dose</Text>
+            <TextInput
+              placeholder={"Dose"}
+              value={dose}
+              style={styles.textInput}
+              onChangeText={text => setDose(text)}
+            />
+          </View>
+          <View style={{ marginTop: 5, width: "100%" }}>
+            <Text>Time</Text>
+            <TouchableOpacity
+              onPress={() => setShowTimePicker(true)}
+              style={[styles.inputGroup, { width: "100%" }]}
+            >
+              <Ionicons
+                style={styles.icon}
+                name="time"
+                size={24}
+                color="black"
+              />
+              <Text style={{ fontSize: hp(1.8), padding: 10 }}>
+                {reminder ?? "Select Time Reminder"}
+              </Text>
+            </TouchableOpacity>
+          </View>
+          <View style={{ marginTop: 5, width: "100%" }}>
+            <Text>When</Text>
+            <View style={styles.inputGroup}>
+              <Ionicons
+                style={styles.icon}
+                name="time-outline"
+                size={24}
+                color="black"
+              />
+
+              <Picker
+                selectedValue={when || WhenToTake[0]}
+                onValueChange={(itemValue, itemIndex) => setWhen(itemValue)}
+                style={{ width: "90%" }}
+              >
+                {WhenToTake.map((item, index) => (
+                  <Picker.Item key={index} label={item} value={item} />
+                ))}
+              </Picker>
+            </View>
+          </View>
+
+          <View style={styles.modalButtons}>
+            <TouchableOpacity
+              onPress={() => setIsModalVisible(false)}
+              style={[
+                styles.missedButton,
+                { borderColor: isLoading ? "gray" : "red" },
+              ]}
+            >
+              <Text
+                style={{
+                  fontSize: hp(2),
+                  color: isLoading ? "gray" : "red",
+                  fontWeight: "700",
+                }}
+              >
+                Cancel
+              </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                handleEdit({ name, dose, when, reminder });
+              }}
+              style={[
+                styles.successButton,
+                { backgroundColor: isLoading ? "gray" : Colors.GREEN },
+              ]}
+            >
+              <Text
+                style={{ fontSize: hp(2), color: "white", fontWeight: "700" }}
+              >
+                Save
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </View>
+      {showTimePicker && (
+        <RNDateTimePicker
+          display="spinner"
+          mode="time"
+          value={new Date(reminder) ?? new Date()}
+          onChange={(event, selectedDate) => {
+            if (event.type === "set" && selectedDate) {
+              setReminder(formatTime(selectedDate));
+            }
+            setShowTimePicker(false);
+          }}
+          minimumDate={new Date()}
+        />
+      )}
+    </Modal>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -221,5 +421,60 @@ const styles = StyleSheet.create({
     // backgroundColor: Colors.GREEN,
     alignItems: "center",
     borderRadius: 10,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 15,
+    width: wp(80),
+    alignItems: "center",
+  },
+  modalTitle: {
+    fontSize: hp(3),
+    fontWeight: "bold",
+  },
+  modalButtons: {
+    flexDirection: "row",
+    gap: 16,
+    marginTop: 15,
+  },
+  cancelButton: {
+    // backgroundColor: colors.neutral600,
+    flex: 1,
+  },
+  saveButton: {
+    backgroundColor: Colors.PRIMARY,
+    flex: 1,
+  },
+  textInput: {
+    width: "100%",
+    padding: 10,
+    marginTop: 5,
+    fontSize: hp(1.7),
+    borderWidth: 1,
+    borderRadius: 10,
+    backgroundColor: Colors.WHITE,
+  },
+  inputGroup: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 5,
+    borderRadius: 8,
+    borderWidth: 1,
+    marginTop: 5,
+    backgroundColor: Colors.WHITE,
+  },
+  icon: {
+    color: Colors.PRIMARY,
+    borderRightWidth: 1,
+    paddingRight: 10,
+    borderRightColor: Colors.GRAY,
   },
 });

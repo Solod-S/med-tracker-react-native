@@ -57,6 +57,65 @@ medicationsFirebaseServices.saveMedication = async data => {
   }
 };
 
+medicationsFirebaseServices.updateMedication = async data => {
+  try {
+    const { docId, name, type, dose, startDate, endDate, reminder, when } =
+      data;
+
+    if (!docId) {
+      return {
+        success: false,
+        message: "docId is required to update the medication.",
+      };
+    }
+
+    const missingFields = [];
+
+    if (!name) missingFields.push("Name");
+    if (!type) missingFields.push("Type");
+    if (!dose) missingFields.push("Dose");
+    if (!when) missingFields.push("When");
+    if (!startDate) missingFields.push("Start Date");
+    if (!endDate) missingFields.push("End Date");
+    if (!reminder) missingFields.push("Reminder");
+    if (missingFields.length > 0) {
+      return {
+        success: false,
+        message: `Please fill in the following fields: ${missingFields.join(
+          ", "
+        )}`,
+      };
+    }
+
+    const updatedData = {
+      ...(name !== undefined && { name }),
+      // ...(type !== undefined && { type }),
+      ...(dose !== undefined && { dose }),
+      ...(when !== undefined && { when }),
+      // ...(startDate !== undefined && { startDate }),
+      // ...(endDate !== undefined && { endDate }),
+      ...(reminder !== undefined && { reminder }),
+    };
+
+    // if (startDate && endDate) {
+    //   updatedData.dates = getDatesRange(startDate, endDate);
+    // }
+
+    const docRef = doc(db, "medication", docId);
+    await updateDoc(docRef, updatedData);
+
+    return {
+      success: true,
+      message: "Data has been successfully updated.",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+};
+
 medicationsFirebaseServices.deleteMedication = async docId => {
   try {
     await deleteDoc(doc(db, "medication", docId));
