@@ -14,6 +14,7 @@ export const MedicationCardItem = ({ medicine, selectedDate = "" }) => {
   const checkStatus = () => {
     if (Array.isArray(medicine?.action)) {
       const data = medicine.action.find(item => item.date === selectedDate);
+      console.log(`data`, data);
       setStatus(data);
     }
   };

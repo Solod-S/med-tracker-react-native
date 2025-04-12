@@ -4,6 +4,7 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDoc,
   getDocs,
   query,
   setDoc,
@@ -159,20 +160,61 @@ medicationsFirebaseServices.fetchMedication = async (user, selectedDate) => {
   }
 };
 
+// medicationsFirebaseServices.changeStatus = async (status, medicine) => {
+//   try {
+//     const docRef = doc(db, "medication", medicine?.docId);
+//     await updateDoc(docRef, {
+//       action: arrayUnion({
+//         status,
+//         time: moment().format("LT"),
+//         date: medicine?.selectedDate,
+//       }),
+//     });
+
+//     return {
+//       success: true,
+//       message: "Data has been successfully updated.",
+//     };
+//   } catch (error) {
+//     console.log(`error in changeStatus:`, error.message);
+//     return {
+//       success: false,
+//       message: error.message,
+//     };
+//   }
+// };
+
 medicationsFirebaseServices.changeStatus = async (status, medicine) => {
   try {
     const docRef = doc(db, "medication", medicine?.docId);
+    const docSnap = await getDoc(docRef);
+
+    if (!docSnap.exists()) {
+      throw new Error("Document does not exist");
+    }
+
+    const data = docSnap.data();
+    const currentActions = data.action || [];
+
+    const newAction = {
+      status,
+      time: moment().format("LT"),
+      date: medicine?.selectedDate,
+    };
+
+    // Удаляем старый объект с такой же датой, если он есть
+    const updatedActions = currentActions.filter(
+      a => a.date !== medicine?.selectedDate
+    );
+
+    updatedActions.push(newAction);
+
     await updateDoc(docRef, {
-      action: arrayUnion({
-        status,
-        time: moment().format("LT"),
-        date: medicine?.selectedDate,
-      }),
+      action: updatedActions,
     });
 
     return {
       success: true,
-
       message: "Data has been successfully updated.",
     };
   } catch (error) {
